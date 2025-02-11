@@ -29,16 +29,16 @@
                         <%= user.username %>
                     </h1>
 
-                    <% } else { %>
+                <% } else { %>
                         <h1 class="text-white font-bold mb-4">
                             No hay usuario
                         </h1>
 
-                        <% } %>
+                <% } %>
 
                             <ul class="space-y-2 font-medium">
                                 <li>
-                                    <a href="#"
+                                    <a href="/"
                                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                         <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -52,8 +52,22 @@
                                     </a>
                                 </li>
 
+                                <% if (user.isAdmin) { %>
+
+                                    <li>
+                                        <a href="/schedule"
+                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                            <svg  xmlns="http://www.w3.org/2000/svg"  class="w-5 h-5"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-clock-24"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 0 0 5.998 8.485m12.002 -8.485a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-1a1 1 0 0 0 -1 1v1a1 1 0 0 0 1 1h2" /><path d="M18 15v2a1 1 0 0 0 1 1h1" /><path d="M21 15v6" /></svg>
+                                            <span class="ms-3">Horarios</span>
+                                        </a>
+                                    </li>
+                                <% } else { %>
+                                    
+                                <% } %>
+
+                                <% if (user.isAdmin) { %>
                                 <li>
-                                    <a href="#"
+                                    <a href="/users"
                                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                         <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -64,18 +78,28 @@
                                         <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
                                     </a>
                                 </li>
+                                <% } else { %>
+                                    
+                                <% } %>
+
+                                <% if (!user.isAdmin) { %>
                                 <li>
-                                    <a href="#"
+                                    <a href="/permissions"
                                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                        <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                            viewBox="0 0 18 20">
-                                            <path
-                                                d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z" />
-                                        </svg>
-                                        <span class="flex-1 ms-3 whitespace-nowrap">Products</span>
+                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M16 10c0-.55228-.4477-1-1-1h-3v2h3c.5523 0 1-.4477 1-1Z"/>
+                                            <path d="M13 15v-2h2c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3h-2.256c.1658-.46917.256-.97405.256-1.5 0-.51464-.0864-1.0091-.2454-1.46967C12.8331 4.01052 12.9153 4 13 4h7c.5523 0 1 .44772 1 1v9c0 .5523-.4477 1-1 1h-2.5l1.9231 4.6154c.2124.5098-.0287 1.0953-.5385 1.3077-.5098.2124-1.0953-.0287-1.3077-.5385L15.75 16l-1.827 4.3846c-.1825.438-.6403.6776-1.0889.6018.1075-.3089.1659-.6408.1659-.9864v-2.6002L14 15h-1ZM6 5.5C6 4.11929 7.11929 3 8.5 3S11 4.11929 11 5.5 9.88071 8 8.5 8 6 6.88071 6 5.5Z"/>
+                                            <path d="M15 11h-4v9c0 .5523-.4477 1-1 1-.55228 0-1-.4477-1-1v-4H8v4c0 .5523-.44772 1-1 1s-1-.4477-1-1v-6.6973l-1.16797 1.752c-.30635.4595-.92722.5837-1.38675.2773-.45952-.3063-.5837-.9272-.27735-1.3867l2.99228-4.48843c.09402-.14507.2246-.26423.37869-.34445.11427-.05949.24148-.09755.3763-.10887.03364-.00289.06747-.00408.10134-.00355H15c.5523 0 1 .44772 1 1 0 .5523-.4477 1-1 1Z"/>
+                                          </svg>
+                                          
+                                        
+                                        <span class="flex-1 ms-3 whitespace-nowrap">Solicitar Permiso</span>
                                     </a>
                                 </li>
+                                <% } else { %>
+                                    
+                                <% } %>
+
                                 <li>
                                     <Form id="logoutForm" method="POST"
                                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group cursor-pointer">
@@ -96,6 +120,9 @@
 
         <div class="p-4 sm:ml-64">
             <h1 class="text-start">Dashboard</h1>
+            <form action="/attendance" method="POST">
+                <button type="submit">Registrar Asistencia</button>
+            </form>
             <!-- <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
                 <div class="grid grid-cols-3 gap-4 mb-4">
                     <div class="flex items-center justify-center h-24 rounded-sm bg-gray-50 dark:bg-gray-800">

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Solicitar Permiso</title>
+</head>
+<body>
+    <h1>Solicitar Permiso</h1>
+    <h5>Mis permisos</h5>
+    <table border="1">
+        <tr>
+            <th>Motivo</th>
+            <th>Fecha de Inicio</th>
+            <th>Fecha de Fin</th>
+            <th>Estado</th>
+            <th>Acción</th>
+        </tr>
+        <% permissions.forEach(permission => { %>
+            <tr>
+                <td><%= permission.reason %></td>
+                <td><%= permission.startDate %></td>
+                <td><%= permission.endDate %></td>
+                <td><%= permission.status %></td>
+                <td>
+                    <form action="/permissions/<%= permission._id %>?_method=DELETE" method="POST">
+                       
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+    </table>
+
+    <form action="/permissions" method="POST">
+        <input type="text" name="reason" placeholder="Motivo" required />
+        <input type="date" name="startDate" required />
+        <input type="date" name="endDate" required />
+        <button type="submit">Solicitar</button>    
+    </form>
+    <a href="/">Volver</a>
+</body>
+</html>
