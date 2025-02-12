@@ -42,7 +42,15 @@
                                 <li>
                                     <a href="/"
                                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                        <svg  xmlns="http://www.w3.org/2000/svg"  class="w-6 h-6"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-home"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-home">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+                                            <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                                            <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                                        </svg>
                                         <span class="ms-3">Dashboard</span>
                                     </a>
                                 </li>
@@ -72,7 +80,7 @@
                                         <% } %>
 
                                             <% if (user.isAdmin) { %>
-                                                <li>
+                                                <!-- <li>
                                                     <a href="/users"
                                                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                                         <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -83,7 +91,7 @@
                                                         </svg>
                                                         <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
                                                     </a>
-                                                </li>
+                                                </li> -->
                                                 <% } else { %>
 
                                                     <% } %>
@@ -118,9 +126,21 @@
                                                                     <li>
                                                                         <form id="logoutForm" method="POST"
                                                                             class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group cursor-pointer">
-                                                                            <svg  xmlns="http://www.w3.org/2000/svg"  class="w-6 h-6" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-logout-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2" /><path d="M15 12h-12l3 -3" /><path d="M6 15l-3 -3" /></svg>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                class="w-6 h-6" viewBox="0 0 24 24"
+                                                                                fill="none" stroke="currentColor"
+                                                                                stroke-width="2" stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                class="icon icon-tabler icons-tabler-outline icon-tabler-logout-2">
+                                                                                <path stroke="none" d="M0 0h24v24H0z"
+                                                                                    fill="none" />
+                                                                                <path
+                                                                                    d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2" />
+                                                                                <path d="M15 12h-12l3 -3" />
+                                                                                <path d="M6 15l-3 -3" />
+                                                                            </svg>
                                                                             <button type="submit" class="ms-3">Cerrar
-                                                                            Sesión</button>
+                                                                                Sesión</button>
                                                                         </form>
                                                                     </li>
 
@@ -192,22 +212,29 @@
                     <div>
                         <h2 class="text-lg font-semibold">Mi Horario Laboral</h2>
                         <div class="grid lg:grid-cols-3 grid-cols-1 m-4 gap-4">
-                            <% allUserSchedules.forEach(dataDay => { %>
-                            <div class="border-2 bg-slate-300 shadow-lg rounded-md h-[100px] p-4 flex justify-between">
-                                <div>
-                                    <h5><strong>Día:</strong> <%= dataDay.day %></h5>
+                            <% allUserSchedules.forEach(dataDay=> { %>
+                                <div
+                                    class="border-2 bg-slate-300 shadow-lg rounded-md h-[100px] p-4 flex justify-between">
                                     <div>
-                                        <h5><strong>Horario</strong></h5>
-                                        <div class="flex gap-4">
-                                            <p class="text-black"><strong>Inicio:</strong> <%= dataDay.startTime %> </p>
-                                            <p><strong>Fin:</strong> <%= dataDay.endTime %> </p>
+                                        <h5><strong>Día:</strong>
+                                            <%= dataDay.day %>
+                                        </h5>
+                                        <div>
+                                            <h5><strong>Horario</strong></h5>
+                                            <div class="flex gap-4">
+                                                <p class="text-black"><strong>Inicio:</strong>
+                                                    <%= dataDay.startTime %>
+                                                </p>
+                                                <p><strong>Fin:</strong>
+                                                    <%= dataDay.endTime %>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
+                                    <p class="text-2xl">🎉</p>
+
                                 </div>
-                                <p class="text-2xl">🎉</p>
-                                
-                            </div>
-                            <% }) %>
+                                <% }) %>
 
                         </div>
                     </div>
@@ -220,7 +247,28 @@
                     <div class="flex flex-1 flex-col items-center">
                         <% if (userSchedule && userSchedule.day && userSchedule.startTime && userSchedule.endTime) { %>
                             <div class="text-orange-500 ">
-                                <svg  xmlns="http://www.w3.org/2000/svg" class="h-20 w-20"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-sun"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z" /><path d="M18.313 16.91l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.218 -1.567l.102 .07z" /><path d="M7.007 16.993a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z" /><path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" /><path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" /><path d="M6.213 4.81l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.217 -1.567l.102 .07z" /><path d="M19.107 4.893a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z" /><path d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z" /><path d="M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" viewBox="0 0 24 24"
+                                    fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-sun">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path
+                                        d="M12 19a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z" />
+                                    <path
+                                        d="M18.313 16.91l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.218 -1.567l.102 .07z" />
+                                    <path
+                                        d="M7.007 16.993a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z" />
+                                    <path
+                                        d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" />
+                                    <path
+                                        d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" />
+                                    <path
+                                        d="M6.213 4.81l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.217 -1.567l.102 .07z" />
+                                    <path
+                                        d="M19.107 4.893a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z" />
+                                    <path
+                                        d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z" />
+                                    <path
+                                        d="M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
+                                </svg>
                             </div>
                             <p><strong>Día:</strong>
                                 <%= userSchedule.day %>
@@ -250,7 +298,124 @@
                                                 <p class="text-red-500">No tienes un horario asignado.</p>
                                                 <% } %>
                     </div>
-                    <% } %>
+
+                    <% } else { %>
+                        <div class="grid lg:grid-cols-3 grid-cols-1 mt-4 gap-4">
+                            <div class="border-black border-1 text-start p-2 shadow-lg gap-4 flex justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-md">Usuarios en la plataforma</h3>
+                                    <p>
+                                        <%= plataformUser %>
+                                    </p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-users">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                                </svg>
+                            </div>
+
+                            <div class="border-black border-1 text-start p-2 shadow-lg gap-4 flex justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-md">Permisos aceptados</h3>
+                                    <p>
+                                        <%= grantedPermissions %>
+                                    </p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-700"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-user-check">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
+                                    <path d="M15 19l2 2l4 -4" />
+                                </svg>
+                            </div>
+
+                            <div class="border-black border-1 text-start p-2 shadow-lg gap-4 flex justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-md">Permisos sin aceptar</h3>
+                                    <p>
+                                        <%= noGrantedPermissions %>
+                                    </p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-700" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-user-minus">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4c.348 0 .686 .045 1.009 .128" />
+                                    <path d="M16 19h6" />
+                                </svg>
+                            </div>
+
+
+
+
+                        </div>
+                        <hr class="mt-4">
+                        <div class="mt-2">
+                            <h2 class="font-bold text-xl">Permisos Solicitados</h2>
+                            <div>
+                                <% allPermissions.forEach(permissionData=> { %>
+                                    <div class="border-1 border rounded-md shadow-lg black p-2">
+                                        <div class="flex justify-between">
+                                            <div class="flex items-center gap-4">
+                                                <h5 class="font-bold">
+                                                    <%= permissionData.username %>
+                                                </h5>
+                                                <p>👤</p>
+                                            </div>
+
+                                            <div class="inline-flex">Estado:
+                                                <% if (permissionData.status=='Pending' ) { %>
+                                                    <p class="text-red-800 ms-2 font-semibold">Pendiente</p>
+                                                    <% } %>
+                                            </div>
+
+                                        </div>
+                                        <div>
+                                            <h5 class="text-xs"><strong>Motivo:</strong></h5>
+                                            <p class="text-lg text-sm font-normal">
+                                                <%= permissionData.reason %>
+                                            </p>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex gap-4 items-center">
+                                                <p><strong>Desde:</strong>
+                                                    <%= permissionData.startDate %>
+                                                </p>
+                                                <p><strong>Hasta:</strong>
+                                                    <%= permissionData.endDate %>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <button
+                                                    onclick="updatePermission('<%= permissionData._id %>', 'Approved')"
+                                                    class="bg-green-700 px-4 rounded-md py-2 text-white">Otorgar</button>
+                                                <button
+                                                    onclick="updatePermission('<%= permissionData._id %>', 'Rejected')"
+                                                    class="bg-red-700 px-4 py-2 text-white rounded-md">Rechazar</button>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <% }) %>
+                            </div>
+                        </div>
+
+
+
+
+                        <% } %>
 
                 </div>
 
@@ -262,7 +427,31 @@
 
     </section>
 
+    <script>
+        function updatePermission(permissionId, status) {
+            fetch(`/permissions/${permissionId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: status })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload(); // Recargar la página para mostrar el estado actualizado
+                    } else {
+                        alert('Error al actualizar el permiso');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Error al actualizar el permiso');
+                });
+        }
 
+    </script>
     <script>
 
 
@@ -286,6 +475,8 @@
             });
         })
     </script>
+
+
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 import express from 'express'
 import { PORT, SECRET_JWT_KEY } from './config.js'
-import { AttendanceApp, Permission, PermissionApp, RegisterApp, ReportApp, ScheduleApp, Schedule, ScheduleAppUsers, Attendance } from './registerDB.js'
+import { AttendanceApp, Permission, PermissionApp, RegisterApp, ReportApp, ScheduleApp, Schedule, ScheduleAppUsers, Attendance, User } from './registerDB.js'
 import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose';
@@ -44,11 +44,11 @@ app.get('/', async (req, res) => {
     try {
         const userSchedule = await ScheduleApp.getUserSchedule({ userId: user.id });
         let attendanceStatus = 'Registered'; // Asistencia por defecto como registrada.
-        console.log(userSchedule)
+        // console.log(userSchedule)
 
 
-        const allUserSchedules = await ScheduleApp.getAllUserSchedule({ userId: user.id})
-        console.log(allUserSchedules)
+        const allUserSchedules = await ScheduleApp.getAllUserSchedule({ userId: user.id })
+        // console.log(allUserSchedules)
 
         const totalPresent = await Attendance.find({
             userId: user.id,
@@ -60,14 +60,14 @@ app.get('/', async (req, res) => {
             userId: user.id,
             status: "Late"
         }).length;
-    
+
 
         // Contar los días en los que no se registró asistencia
         const totalAbsent = await Attendance.find({
             userId: user.id,
             status: "Absent"
         }).length;
-        
+
 
         if (!userSchedule) {
             attendanceStatus = "No tienes un horario asignado.";
@@ -94,13 +94,32 @@ app.get('/', async (req, res) => {
             }
         }
 
+        const plataformUser = await User.find().length
+        const grantedPermissions = await Permission.find({status: 'Approved'}).length
+        const noGrantedPermissions = await Permission.find({status: 'Rejected'}).length
 
-        
+        const allPermissions = await Permission.find({status: 'Pending'})
+        const permissionsWithUsernames = [];
+
+        // Iterar sobre cada permiso
+        for (const permission of allPermissions) {
+            // Buscar el usuario correspondiente
+            const userDetails = await User.findOne({_id: permission.userId}); // Asegúrate de que userId sea un ObjectId válido
+
+            // Agregar el permiso y el nombre de usuario al nuevo array
+            permissionsWithUsernames.push({
+                ...permission, // Copiar los datos del permiso
+                username: userDetails ? userDetails.username : 'Usuario no encontrado' // Manejo de caso donde no se encuentra el usuario
+            });
+        }
+
+        console.log(permissionsWithUsernames)
+
 
 
         // Contadores de asistencia
-     
-        res.render('home', { user, userSchedule, attendanceStatus, totalPresent, totalLate, totalAbsent, allUserSchedules });
+
+        res.render('home', { user, userSchedule, attendanceStatus, totalPresent, totalLate, totalAbsent, allUserSchedules, plataformUser, grantedPermissions, noGrantedPermissions, allPermissions: permissionsWithUsernames });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error al cargar los horarios.");
@@ -208,8 +227,8 @@ app.post('/attendance', async (req, res) => {
         }
 
         // Si no se ha registrado la asistencia, crear un nuevo registro
-        const attendanceRegister = await Attendance.create({ 
-            userId: user.id, 
+        const attendanceRegister = await Attendance.create({
+            userId: user.id,
             timestamp: new Date().toISOString()  // Convertir la fecha a cadena
         });
 
@@ -315,6 +334,9 @@ app.get('/permissions', (req, res) => {
 
 });
 
+
+
+
 app.post('/permissions', async (req, res) => {
     const { user } = req.session;
     if (!user) return res.status(401).send('No autorizado');
@@ -348,6 +370,36 @@ app.delete('/permissions/:id', async (req, res) => {
         res.status(500).send('Error al eliminar el permiso');
     }
 });
+
+
+app.put('/permissions/:id', async (req, res) => {
+    const { user } = req.session;
+    if (!user) return res.status(401).send('No autorizado');
+
+    if (!user.isAdmin) return res.status(401).send('No tienes permiso')
+
+    const { id } = req.params;
+    const { status } = req.body; // Estado nuevo: 'Accepted' o 'Rejected'
+
+    try {
+        const permission = await Permission.findOne({ _id: id });
+
+        if (!permission) {
+            return res.status(404).json({ success: false, message: 'Permiso no encontrado' });
+        }
+
+        permission.status = status; // Actualiza el estado del permiso
+        await permission.save(); // Guarda los cambios
+
+        res.json({ success: true, message: `Permiso ${status.toLowerCase()} correctamente` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error al actualizar el permiso' });
+    }
+});
+
+
+
 
 
 
