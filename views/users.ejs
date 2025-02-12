@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios y Horarios</title>
+</head>
+<body>
+    <h1>Lista de Usuarios con sus Horarios</h1>
+    
+    <% if (users.length > 0) { %>
+        <ul>
+            <% users.forEach(user => { %>
+                <li>
+                    <strong>Usuario:</strong> <%= user.username %>
+                    <ul>
+                        <% if (user.schedule.length > 0) { %>
+                            <% user.schedule.forEach(schedule => { %>
+                                <li><%= schedule.day %>: <%= schedule.startTime %> - <%= schedule.endTime %></li>
+                            <% }) %>
+                        <% } else { %>
+                            <li>No tiene horarios asignados</li>
+                        <% } %>
+                    </ul>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No hay usuarios registrados.</p>
+    <% } %>
+
+</body>
+</html>

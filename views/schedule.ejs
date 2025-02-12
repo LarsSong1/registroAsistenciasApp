@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Gestión de Horarios</title>
+</head>
+<body>
+    <h1>Gestión de Horarios</h1>
+    <% if (usersWithSchedules && usersWithSchedules.length > 0) { %>
+        <% usersWithSchedules.forEach(user => { %>
+            <h3><%= user.username %></h3> <!-- Nombre de usuario -->
+            <h1><%=user._id %></h1>
+            <form action="/schedule/<%= user.userId %>" method="POST">
+                <h4>Asignar Horario</h4>
+                <label for="day">Día:</label>
+                <input type="text" name="day" value="<%= user.schedule.day %>" required><br>
+
+                <label for="startTime">Hora de Inicio:</label>
+                <input type="time" name="startTime" value="<%= user.schedule.startTime %>" required><br>
+
+                <label for="endTime">Hora de Fin:</label>
+                <input type="time" name="endTime" value="<%= user.schedule.endTime %>" required><br>
+
+                <button type="submit">Crear Horario</button>
+            </form>
+
+            <h4>Horario actual:</h4>
+            <ul>
+                <li><%= user.schedule.day %>: <%= user.schedule.startTime %> - <%= user.schedule.endTime %></li>
+                <% user.schedule.forEach(scheduleData => { %>
+                    <li><%= scheduleData.day %>: <%= scheduleData.startTime %> - <%= scheduleData.endTime %></li>
+                <% }); %>
+            </ul>
+            <br>
+        <% }); %>
+    <% } else { %>
+        <p>No hay Usuarios</p>
+    <% } %>
+
+
+    <a href="/">Volver</a>
+</body>
+</html>

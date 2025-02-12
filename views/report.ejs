@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Informe de Asistencia</title>
+</head>
+<body>
+    <h1>Informe de Asistencia</h1>
+    <ul>
+        <% records.forEach(record => { %>
+            <li><%= record.timestamp %>: <%= record.status %></li>
+        <% }); %>
+    </ul>
+    <a href="/">Volver</a>
+</body>
+</html>
