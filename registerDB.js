@@ -10,7 +10,7 @@ const { Schema } = new dbLocal({ path: './db' })
 export const Session = Schema('Session', {
 	_id: { type: String, required: true },
 	user: { type: String, required: true },
-	expires: { type: String, rquired: true }
+	expires: { type: String, required: true }
 })
 
 export const User = Schema('User', {
@@ -174,9 +174,17 @@ export const ScheduleAppUsers = {
 export class ScheduleApp {
 	static async getUserSchedule({userId}) {
 		if (!userId) throw new Error('Se requiere un usuario');
-		const schedule = Schedule.find({ userId });
+		const schedule = await Schedule.findOne({ userId });
+		
+		return schedule;
+	}
 
-		return schedule || [];
+	static async getAllUserSchedule({userId}) {
+		if (!userId) throw new Error('Se requiere un usuario');
+		const schedule = await Schedule.find({ userId });
+		
+		
+		return schedule;
 	}
 
 

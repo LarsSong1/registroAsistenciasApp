@@ -1,41 +1,256 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <title>Solicitar Permiso</title>
+    <link rel="stylesheet" href="../styles/dashboard.css">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
-<body>
-    <h1>Solicitar Permiso</h1>
-    <h5>Mis permisos</h5>
-    <table border="1">
-        <tr>
-            <th>Motivo</th>
-            <th>Fecha de Inicio</th>
-            <th>Fecha de Fin</th>
-            <th>Estado</th>
-            <th>Acción</th>
-        </tr>
-        <% permissions.forEach(permission => { %>
-            <tr>
-                <td><%= permission.reason %></td>
-                <td><%= permission.startDate %></td>
-                <td><%= permission.endDate %></td>
-                <td><%= permission.status %></td>
-                <td>
-                    <form action="/permissions/<%= permission._id %>?_method=DELETE" method="POST">
-                       
-                        <button type="submit">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        <% }) %>
-    </table>
 
-    <form action="/permissions" method="POST">
-        <input type="text" name="reason" placeholder="Motivo" required />
-        <input type="date" name="startDate" required />
-        <input type="date" name="endDate" required />
-        <button type="submit">Solicitar</button>    
-    </form>
-    <a href="/">Volver</a>
+<body>
+    <section class="h-screen w-full">
+        <div class="w-full flex justify-end bg-black">
+            <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar"
+                aria-controls="default-sidebar" type="button"
+                class="inline-flex items-end  p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                <span class="sr-only">Open sidebar</span>
+                <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path clip-rule="evenodd" fill-rule="evenodd"
+                        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <aside id="default-sidebar"
+            class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+            aria-label="Sidebar">
+            <div class="h-full px-3 py-4 overflow-y-auto bg-black">
+                <% if (user) { %>
+                    <h1 class="text-white font-bold mb-4">
+                        <%= user.username %>
+                    </h1>
+
+                    <% } else { %>
+                        <h1 class="text-white font-bold mb-4">
+                            No hay usuario
+                        </h1>
+
+                        <% } %>
+
+                            <ul class="space-y-2 font-medium">
+                                <li>
+                                    <a href="/"
+                                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                        <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                            viewBox="0 0 22 21">
+                                            <path
+                                                d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
+                                            <path
+                                                d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
+                                        </svg>
+                                        <span class="ms-3">Dashboard</span>
+                                    </a>
+                                </li>
+
+                                <% if (user.isAdmin) { %>
+
+                                    <li>
+                                        <a href="/schedule"
+                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="icon icon-tabler icons-tabler-outline icon-tabler-clock-24">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M3 12a9 9 0 0 0 5.998 8.485m12.002 -8.485a9 9 0 1 0 -18 0" />
+                                                <path d="M12 7v5" />
+                                                <path
+                                                    d="M12 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-1a1 1 0 0 0 -1 1v1a1 1 0 0 0 1 1h2" />
+                                                <path d="M18 15v2a1 1 0 0 0 1 1h1" />
+                                                <path d="M21 15v6" />
+                                            </svg>
+                                            <span class="ms-3">Horarios</span>
+                                        </a>
+                                    </li>
+                                    <% } else { %>
+
+                                        <% } %>
+
+                                            <% if (user.isAdmin) { %>
+                                                <li>
+                                                    <a href="/users"
+                                                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                                        <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="currentColor" viewBox="0 0 20 18">
+                                                            <path
+                                                                d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                                                        </svg>
+                                                        <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
+                                                    </a>
+                                                </li>
+                                                <% } else { %>
+
+                                                    <% } %>
+
+                                                        <% if (!user.isAdmin) { %>
+                                                            <li>
+                                                                <a href="/permissions"
+                                                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                                                    <svg class="w-6 h-6 text-gray-800 dark:text-white"
+                                                                        aria-hidden="true"
+                                                                        xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                        height="24" fill="currentColor"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path
+                                                                            d="M16 10c0-.55228-.4477-1-1-1h-3v2h3c.5523 0 1-.4477 1-1Z" />
+                                                                        <path
+                                                                            d="M13 15v-2h2c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3h-2.256c.1658-.46917.256-.97405.256-1.5 0-.51464-.0864-1.0091-.2454-1.46967C12.8331 4.01052 12.9153 4 13 4h7c.5523 0 1 .44772 1 1v9c0 .5523-.4477 1-1 1h-2.5l1.9231 4.6154c.2124.5098-.0287 1.0953-.5385 1.3077-.5098.2124-1.0953-.0287-1.3077-.5385L15.75 16l-1.827 4.3846c-.1825.438-.6403.6776-1.0889.6018.1075-.3089.1659-.6408.1659-.9864v-2.6002L14 15h-1ZM6 5.5C6 4.11929 7.11929 3 8.5 3S11 4.11929 11 5.5 9.88071 8 8.5 8 6 6.88071 6 5.5Z" />
+                                                                        <path
+                                                                            d="M15 11h-4v9c0 .5523-.4477 1-1 1-.55228 0-1-.4477-1-1v-4H8v4c0 .5523-.44772 1-1 1s-1-.4477-1-1v-6.6973l-1.16797 1.752c-.30635.4595-.92722.5837-1.38675.2773-.45952-.3063-.5837-.9272-.27735-1.3867l2.99228-4.48843c.09402-.14507.2246-.26423.37869-.34445.11427-.05949.24148-.09755.3763-.10887.03364-.00289.06747-.00408.10134-.00355H15c.5523 0 1 .44772 1 1 0 .5523-.4477 1-1 1Z" />
+                                                                    </svg>
+
+
+                                                                    <span
+                                                                        class="flex-1 ms-3 whitespace-nowrap">Solicitar
+                                                                        Permiso</span>
+                                                                </a>
+                                                            </li>
+                                                            <% } else { %>
+
+                                                                <% } %>
+
+                                                                    <li>
+                                                                        <form id="logoutForm" method="POST"
+                                                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group cursor-pointer">
+                                                                            <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                                                                aria-hidden="true"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                fill="none" viewBox="0 0 18 16">
+                                                                                <path stroke="currentColor"
+                                                                                    stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    stroke-width="2"
+                                                                                    d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
+                                                                            </svg>
+                                                                            <button type="submit" class="ms-3">Cerrar
+                                                                                Sesión</button>
+                                                                                
+                                                                        </form>
+                                                                    </li>
+
+                            </ul>
+            </div>
+        </aside>
+
+        <div class="p-4 sm:ml-64">
+            <h1 class="text-start font-bold text-2xl">Solicitar Permiso</h1>
+            <h5 class="text-xl font-semibold">Mis permisos</h5>
+            <table class="border-1 w-full" border="1">
+                <tr class="border-b-2">
+                    <th>Motivo</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha de Fin</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+                <% permissions.forEach(permission=> { %>
+                    <tr class="text-center ">
+                        <td>
+                            <%= permission.reason %>
+                        </td>
+                        <td>
+                            <%= permission.startDate %>
+                        </td>
+                        <td>
+                            <%= permission.endDate %>
+                        </td>
+                        <td>
+                            <div class="p-2 bg-slate-300 rounded-md ">
+                                <%= permission.status %>
+                            </div>
+
+                        </td>
+                        <td>
+                            <form action="/permissions/<%= permission._id %>?_method=DELETE" method="POST">
+
+                                <button class="bg-red-500 flex items-center justify-center mx-auto p-2 rounded-md"
+                                    type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="text-white w-4 h-4"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M4 7l16 0" />
+                                        <path d="M10 11l0 6" />
+                                        <path d="M14 11l0 6" />
+                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                    </svg>
+                                    <p class="text-white">Eliminar</p>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </table>
+
+            <form action="/permissions" class="mt-4" method="POST">
+                <h5 class="font-semibold text-xl">Solicita permiso</h5>
+                <!-- <input type="text" name="reason" placeholder="Motivo" required /> -->
+                <div class="flex flex-col">
+                    <textarea class="border-2 border-black rounded-md p-4" name="reason" required placeholder="Motivo"></textarea>
+
+                    <div class="inline-flex self-end">
+                        <p class="mt-4 mr-2">Inicio:</p>
+                        <input class="mt-4 border-2 rounded-md px-2" type="date" name="startDate" required />
+                    </div>
+                    <div class="inline-flex self-end">
+                        <p class="mt-4 mr-2">Fin:</p>
+                        <input class="mt-4 border-2 rounded-md px-2" type="date" name="endDate" required />
+                    </div>
+                  
+                    <button class="self-end bg-orange-500 lg:w-1/6 mt-4 p-2 rounded-md" type="submit">Solicitar</button>
+                </div>
+            </form>
+            <!-- <a href="/">Volver</a> -->
+
+
+
+
+        </div>
+
+
+
+    </section>
+
+
+    <script>
+
+
+        document.getElementById('logoutForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const response = await fetch('/logout', {
+                method: 'POST'
+            });
+            if (response.ok) {
+                window.location.href = '/login';
+            }
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleButton = document.querySelector("[data-drawer-toggle]");
+            const sidebar = document.getElementById("default-sidebar");
+
+            toggleButton.addEventListener("click", function () {
+                sidebar.classList.toggle("-translate-x-full");
+            });
+        })
+    </script>
 </body>
+
 </html>

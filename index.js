@@ -1,6 +1,6 @@
 import express from 'express'
 import { PORT, SECRET_JWT_KEY } from './config.js'
-import { AttendanceApp, Permission, PermissionApp, RegisterApp, ReportApp, ScheduleApp, Schedule, ScheduleAppUsers } from './registerDB.js'
+import { AttendanceApp, Permission, PermissionApp, RegisterApp, ReportApp, ScheduleApp, Schedule, ScheduleAppUsers, Attendance } from './registerDB.js'
 import jwt from 'jsonwebtoken'
 import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose';
@@ -37,12 +37,76 @@ app.use((req, res, next) => {
 
 
 
-app.get('/', (req, res) => {
-    const { user } = req.session
-    if (!user) return res.redirect('/login')
+app.get('/', async (req, res) => {
+    const { user } = req.session;
+    if (!user) return res.redirect('/login');
 
-    res.render('home', { user })
-})
+    try {
+        const userSchedule = await ScheduleApp.getUserSchedule({ userId: user.id });
+        let attendanceStatus = 'Registered'; // Asistencia por defecto como registrada.
+        console.log(userSchedule)
+
+
+        const allUserSchedules = await ScheduleApp.getAllUserSchedule({ userId: user.id})
+        console.log(allUserSchedules)
+
+        const totalPresent = await Attendance.find({
+            userId: user.id,
+            status: "Present"
+        }).length;
+
+
+        const totalLate = await Attendance.find({
+            userId: user.id,
+            status: "Late"
+        }).length;
+    
+
+        // Contar los días en los que no se registró asistencia
+        const totalAbsent = await Attendance.find({
+            userId: user.id,
+            status: "Absent"
+        }).length;
+        
+
+        if (!userSchedule) {
+            attendanceStatus = "No tienes un horario asignado.";
+        } else {
+            const now = new Date();
+            const currentDay = now.toLocaleDateString('es-ES', { weekday: 'long', timeZone: 'America/Guayaquil' }).toLowerCase();
+            const currentTime = now.toTimeString().slice(0, 5);
+
+            const isWorkDay = currentDay === userSchedule.day.toLowerCase();
+            const isWorkHour = currentTime >= userSchedule.startTime && currentTime <= userSchedule.endTime;
+
+            if (!isWorkDay) {
+                attendanceStatus = "No es tu día laboral.";
+            } else if (!isWorkHour) {
+                attendanceStatus = "Fuera de horario laboral.";
+            } else {
+                // Si el día y hora son correctos, verifiquemos si la asistencia ya fue registrada.
+                const attendance = await Attendance.findOne({ where: { userId: user.id, timestamp: { $gte: new Date().setHours(0, 0, 0, 0) } } });
+                if (!attendance) {
+                    attendanceStatus = "No has registrado tu asistencia hoy.";
+                } else {
+                    attendanceStatus = "Asistencia registrada.";
+                }
+            }
+        }
+
+
+        
+
+
+        // Contadores de asistencia
+     
+        res.render('home', { user, userSchedule, attendanceStatus, totalPresent, totalLate, totalAbsent, allUserSchedules });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error al cargar los horarios.");
+    }
+});
+
 
 
 app.post('/login', async (req, res) => {
@@ -51,7 +115,7 @@ app.post('/login', async (req, res) => {
     try {
 
         const user = await RegisterApp.login({ username, password })
-        const token = jwt.sign({ id: user._id, username: user.username, isAdmin: user.isAdmin}, SECRET_JWT_KEY, {
+        const token = jwt.sign({ id: user._id, username: user.username, isAdmin: user.isAdmin }, SECRET_JWT_KEY, {
             expiresIn: '1h'
         })
 
@@ -99,6 +163,14 @@ app.post('/logout', (req, res) => {
     // redireccion
 })
 
+app.get('/permissions/logout', (req, res) => {
+    res
+        .clearCookie('access_token')
+        .redirect('/')
+        .json({ message: 'Logout exitoso' })
+    // redireccion
+})
+
 
 
 
@@ -117,18 +189,41 @@ app.get('/users', async (req, res) => {
 
 
 
-// 📌 Registro de asistencia [Horarios]
+// 📌 Registro de asistencia [Horarios] //////////////////////////
 app.post('/attendance', async (req, res) => {
     const { user } = req.session;
-    if (!user) return res.status(401).send('No autorizado');
-    
+    if (!user) return res.redirect('/login');
+
     try {
-        await AttendanceApp.markAttendance({ userId: user.id });
+        const now = new Date(); // Definir la variable now con la fecha y hora actuales
+
+        // Verificar si ya se registró la asistencia hoy
+        const attendance = await Attendance.findOne({
+            userId: user.id,
+            timestamp: { $gte: new Date(now.setHours(0, 0, 0, 0)).toISOString() } // Buscar solo la asistencia de hoy
+        });
+
+        if (attendance) {
+            return res.status(400).send("Ya has registrado tu asistencia hoy.");
+        }
+
+        // Si no se ha registrado la asistencia, crear un nuevo registro
+        const attendanceRegister = await Attendance.create({ 
+            userId: user.id, 
+            timestamp: new Date().toISOString()  // Convertir la fecha a cadena
+        });
+
+        attendanceRegister.save()
+
         res.redirect('/');
     } catch (error) {
-        res.status(400).send(error.message);
+        console.error(error);
+        res.status(500).send("Error al registrar la asistencia.");
     }
 });
+
+
+
 
 
 
@@ -140,9 +235,9 @@ app.post('/attendance', async (req, res) => {
 app.get('/schedule', async (req, res) => {
     const { user } = req.session;
     if (!user || !user.isAdmin) return res.redirect('/login');
-    
-    
-   
+
+
+
     try {
         const usersWithSchedules = await ScheduleAppUsers.getAllUsersWithSchedules();
         console.log(usersWithSchedules) // Obtener todos los usuarios con horarios
@@ -177,10 +272,10 @@ app.post('/schedule/:userId', async (req, res) => {
         // Llamar al método para crear el horario
         // const updatedSchedule = await ScheduleApp.createSchedule({userId, day, startTime, endTime, isAdmin: user.isAdmin});
         const updatedSchedule = await ScheduleApp.createSchedule({
-            userId, 
-            day, 
-            startTime, 
-            endTime, 
+            userId,
+            day,
+            startTime,
+            endTime,
             isAdmin: user.id // Aquí le pasamos el ID del administrador
         });
 
@@ -213,7 +308,7 @@ app.get('/permissions', (req, res) => {
     try {
         const permissions = Permission.find({ userId: user.id })
         console.log(Permission.find({}))
-        res.render('permissions', { permissions });
+        res.render('permissions', { user, permissions });
     } catch (error) {
         console.error('No se encontraron permisos')
     }
@@ -245,9 +340,9 @@ app.delete('/permissions/:id', async (req, res) => {
     try {
         const permission = await Permission.findOne({ _id: id, userId: user.id });
 
-        const deletePermission = await Permission.remove({_id: id, userId: user.id})
+        const deletePermission = await Permission.remove({ _id: id, userId: user.id })
         if (!deletePermission) return console.error('No se pudo Eliminar')
-        
+
         res.redirect('/');
     } catch (error) {
         res.status(500).send('Error al eliminar el permiso');
